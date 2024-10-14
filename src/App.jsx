@@ -5,13 +5,15 @@ import './App.css'
 import LandingPg from './Pages/LandingPg'
 import LogIn from './Pages/LogInPg'
 import SignUp from './Pages/SignUpPg'
+import { BookingForm } from './Pages/FormPg'
+import ProfilePg from './Pages/ProfilePg'
 
 function App() {
 
 
   return (
     <>
-      <SignUp/>
+      <ProfilePg/>
       
     </>
   )
