@@ -1,43 +1,70 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
+import image from '../assets/images/240_F_46075517_EuzqL0cGOzzPcPL5YHYoNXdcRpi7EqzI.jpg'
+
 function App() {
-  const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 768);
-  // Update state on window resize
-  window.addEventListener("resize", () => {
-    setIsSmallScreen(window.innerWidth < 768);
-  });
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    console.log('Email:', email);
+    console.log('Password:', password);
+    // TODO: submit form data to backend
+  };
+
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <div className="container mx-auto px-4 py-8">
-        <div className="text-center">
-          <h1 className="text-4xl font-bold text-gray-800">
-            Maning Hotels
-          </h1>
-          <p className="text-gray-600">the beauty of Sa</p>
+    <div className="flex flex-col md:flex-row justify-center items-center h-screen">
+         <div className="md:w-1/2 p-4 md:p-8">
+            <img src={image} alt="Hotel Image" className="w-full h-full object-cover" />
+         </div>
+      <div className="md:w-1/2 p-4 md:p-8 mr-4">
+        <h2 className="text-2xl font-bold text-gray-800 mb-4">
+          Log In
+          
+        </h2>
+        <div className="flex flex-col md:flex-row gap-4">
+       
+          <div className="md:w-1/2">
+            <form onSubmit={handleSubmit}>
+              <div className="mb-4">
+                <label htmlFor="email" className="block text-gray-700 font-bold mb-2">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="mb-6">
+                <label
+                  htmlFor="password"
+                  className="block text-gray-700 font-bold mb-2"
+                >
+                  Password
+                </label>
+                <input
+                  type="password"
+                  id="password"
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+              </div>
+              <button type="submit" className="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded">
+                Login
+              </button>
+            </form>
+          </div>
         </div>
-        <div className="mt-8">
-          {/* Image section */}
-          {isSmallScreen ? (
-            <div className="rounded-lg overflow-hidden">
-              <img
-                src="https://source.unsplash.com/random/800x450"
-                alt="Hotel Pool"
-                className="w-full h-64 object-cover"
-              />
-            </div>
-          ) : (
-            <div className="flex justify-between">
-              <div className="w-1/2">
-                {/* Login Form */}
-                <div className="mt-8">
-                  <input
-                    type="text"
-                    className="w-full px-4 py-3 rounded-lg shadow-md focus:outline-none focus:ring-1 focus:ring-blue-500"
-                    placeholder="Username"
-                  />
-                  <input
-                    type="password"
-                    className="mt-4 w-full px-4 py-3 rounded-lg shadow-md focus:outline-none focus:ring-1 focus:ring-blue-500"
-                    placeholder="Password"
-                  />
-                  <button
-                    className="mt-4 w-full px-4 py-3 rounded-lg bg-blue-500 text-white font-medium hover:bg-blue-600 focus:outline-none focus:ring-1 focus:ring-blue- " ></button>
+      </div>
+     
+    </div>
+  );
+}
+
+export default App;
