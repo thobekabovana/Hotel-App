@@ -2,19 +2,20 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
-import ProfilePg from './PagesForUser/ProfilePg'
-import SignUp from './PagesForAdmin/SignUpPg'
-import LogIn from './PagesForAdmin/LogInPg'
-import { AddHotelForm } from './PagesForAdmin/FormPg'
+
+import LandingPg from './PagesForUser/LandingPg'
+import SignUpPg from './PagesForUser/SignUpPg'
+import Layout from './Componants/Layout'
+import LogInPg from './PagesForUser/LogInPg'
 
 function App() {
 
 
   return (
     <>
-      <AddHotelForm/>
-      
+    <SignUpPg/>
     </>
   )
 }

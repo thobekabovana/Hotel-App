@@ -1,15 +1,39 @@
 import React, { useState } from 'react';
 import image from '../assets/images/240_F_46075517_EuzqL0cGOzzPcPL5YHYoNXdcRpi7EqzI.jpg'
+import {auth} from '../Firebase'
+import { createUserWithEmailAndPassword } from 'firebase/auth';
 
-function SignUp() {
+import firebase from 'firebase/compat/app';
+
+function SignUpPg() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    // Submit form data here
-    console.log('Form submitted:', { name, email, password });
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (password =="" || email =="" || name == "") {
+      alert("Please fill in all fields");
+    }
+
+    if (!password.length >=6) {
+      alert("Password must be at least 6 characters");
+    }
+
+
+    try {
+      await createUserWithEmailAndPassword(auth, email, password).then(cred => {
+         db.collection('users').doc(cred.user.uid).set({
+          name: SignUpPg['signup-name'].value
+        }).then(() => {
+           
+        });  
+      })
+      
+      console.log("Account Created")
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
@@ -22,8 +46,7 @@ function SignUp() {
         
         <form onSubmit={handleSubmit}>
             
-        {/* <label for="imageUpload">Upload an Image:</label>
-          <input type="file" id="imageUpload" name="imageUpload" accept="image/*"/> */}
+        
 
           <div className="mb-4">
             <label htmlFor="name" className="block text-gray-700 font-bold mb-2">
@@ -61,7 +84,7 @@ function SignUp() {
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-          <button type="submit" className="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded">
+          <button type="submit" className="bg-blue-500 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded">
             Submit
           </button>
         </form>
@@ -71,4 +94,4 @@ function SignUp() {
   );
 }
 
-export default SignUp;
+export default SignUpPg ;

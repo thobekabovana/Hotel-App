@@ -1,15 +1,20 @@
 import React, { useState } from 'react';
 import image from '../assets/images/240_F_46075517_EuzqL0cGOzzPcPL5YHYoNXdcRpi7EqzI.jpg'
+import {auth} from '../Firebase'
+import { signInWithEmailAndPassword } from 'firebase/auth';
 
-function App() {
+function LogInPg() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    console.log('Email:', email);
-    console.log('Password:', password);
-    // TODO: submit form data to backend
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await signInWithEmailAndPassword(auth, email, password)
+      console.log("Login successfully")
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
@@ -67,4 +72,4 @@ function App() {
   );
 }
 
-export default App;
+export default LogInPg;

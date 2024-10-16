@@ -1,0 +1,12 @@
+ /* {<BrowserRouter>
+     
+     <Routes>
+       <Route path="/" element={<LandingPg/>}>
+         {/* <Route index element={<LandingPg />} /> */
+         /* <Route path="/sign-up" element={<SignUpPg />} /> */
+         /* <Route path="/log-in" element={<LogInPg/>} /> */
+         /* <Route path="/home" element={<Home />} /> */
+       /* </Route> */
+     /* </Routes> */
+     
+   /* </BrowserRouter>  */
