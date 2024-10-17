@@ -12,6 +12,7 @@ import LogInPg from './PagesForUser/LogInPg'
 import SignUp from './PagesForAdmin/SignUpPg'
 import ProfilePage from './PagesForUser/ProfilePg'
 import { AddHotelForm } from './PagesForAdmin/FormPg'
+import HomePg from './PagesForUser/HomePg'
 
 function App() {
 

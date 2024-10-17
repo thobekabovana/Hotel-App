@@ -1,5 +1,10 @@
 import React, { useState } from "react";
 import { useDispatch } from 'react-redux';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth, db } from '../Firebase';
+import { setDoc, doc } from 'firebase/firestore';
+import { getDocs } from "firebase/firestore";
+import {collection, addDoc  } from "firebase/firestore";
 
 export function AddHotelForm() {
   const [location, setLocation] = useState('');
@@ -10,34 +15,28 @@ export function AddHotelForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (password =="" || email =="" || name == "") {
+  
+    // Basic validation for empty fields
+    if (!location || !prices || !description || !faculties || !details) {
       alert("Please fill in all fields");
+      return; // Stop execution if validation fails
     }
-
-    if (!password.length >=6) {
-      alert("Password must be at least 6 characters");
-    }
-
-
+  
     try {
-      await createUserWithEmailAndPassword(auth, email, password)
-      const user = auth.currentUser;
-      console.log(user);
-      if (user) {
-        await setDoc(doc(db, "Admin", user.uid), {
-          email: user.email,
-          fullname: name,
-          companyname: companyName,
-          companynumber: companyNumer
-
-        })
-      }
-      console.log("Account Created")
+      // Add a new document with an auto-generated ID
+      const docRef = await addDoc(collection(db, "Hotels"), {
+        location: location,
+        prices: prices,
+        description: description,
+        faculties: faculties,
+        details: details,
+      });
+    
+       
     } catch (err) {
-      console.log(err.message);
+      console.error("Error adding hotel:", err.message);
     }
   };
-
   return (
     <div className="container mx-auto flex flex-wrap justify-center items-center h-screen md:flex-cols-2 mt-8 w-auto">
       <form onSubmit={handleSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">

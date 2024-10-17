@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import image from '../assets/images/240_F_46075517_EuzqL0cGOzzPcPL5YHYoNXdcRpi7EqzI.jpg';
 import { useDispatch, useSelector } from 'react-redux';
-import { registerUser } from '../redux/userSlice';
+import { registerUser } from '../features/adminSlice'
 
 function SignUp() {
+
+
+
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
