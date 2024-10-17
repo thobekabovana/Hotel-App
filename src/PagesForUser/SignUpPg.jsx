@@ -3,16 +3,19 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { signUpUser } from '../features/userSlice';
 import image from '../assets/images/240_F_46075517_EuzqL0cGOzzPcPL5YHYoNXdcRpi7EqzI.jpg';
+import { useNavigate } from 'react-router-dom';
 
 function SignUpPg() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { loading, error, user } = useSelector((state) => state.user);
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    navigate('/home');
     if (!name || !email || !password) {
       return alert('Please fill in all fields');
     }

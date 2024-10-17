@@ -1,9 +1,5 @@
 import React, { useState } from "react";
-import { useDispatch } from 'react-redux';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth, db } from '../Firebase';
-import { setDoc, doc } from 'firebase/firestore';
-import { getDocs } from "firebase/firestore";
 import {collection, addDoc  } from "firebase/firestore";
 
 export function AddHotelForm() {
@@ -32,8 +28,10 @@ export function AddHotelForm() {
         description: description,
         faculties: faculties,
         details: details,
+        userId: auth?.currentUser?.uid
       });
     
+      
        
     } catch (err) {
       console.error("Error adding hotel:", err.message);

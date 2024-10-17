@@ -19,7 +19,24 @@ function App() {
 
   return (
     <>
-   <HomePg/>
+   <BrowserRouter>
+     
+     <Routes>
+       <Route path="/" element={<Layout/>}>
+        <Route index element={<LandingPg />} /> 
+         <Route path="/log-in" element={<LogInPg />} /> 
+         <Route path="/sign-up" element={<SignUpPg/>} /> 
+         <Route path="/home" element={<HomePg />} /> 
+
+          {/* Admin */}
+
+          <Route path="/register" element={<SignUpPg/>} /> 
+          <Route path="/AddHotel" element={<AddHotelForm/>} /> 
+
+       </Route> */
+     </Routes> */
+     
+   </BrowserRouter>
     </>
   )
 }

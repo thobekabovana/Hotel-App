@@ -1,56 +1,59 @@
 import React, { useState } from "react";
+import {collection, addDoc  } from "firebase/firestore";
 
 export function BookingForm() {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [guestCount, setGuestCount] = useState("");
   const [arrivalDate, setArrivalDate] = useState("");
+  const [depature, setDepature] = useState("");
   const [arrivalTime, setArrivalTime] = useState("");
   const [specialRequest, setSpecialRequest] = useState("");
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    // TODO: Handle form submission here
-    console.log(
-      "Form submitted with the following data:",
-      firstName,
-      lastName,
-      email,
-      guestCount,
-      arrivalDate,
-      arrivalTime,
-      specialRequest
-    );
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+  
+    // Basic validation for empty fields
+    if (!location || !prices || !description || !faculties || !details) {
+      alert("Please fill in all fields");
+      return; // Stop execution if validation fails
+    }
+  
+    try {
+      // Add a new document with an auto-generated ID
+      const docRef = await addDoc(collection(db, "Bookings"), {
+        fullName: fullName,
+        email: email,
+        guestCount: guestCount,
+        arrivalDate: arrivalDate,
+        arrivalTime: arrivalTime,
+        specialRequest: specialRequest,
+        depature: depature,
+        userId: auth?.currentUser?.uid
+      });
+    
+      
+       
+    } catch (err) {
+      console.error("Error adding hotel:", err.message);
+    }
   };
 
   return (
     <div className="container mx-auto flex flex-wrap justify-center items-center h-screen md:flex-cols-2 mt-8 w-auto">
       <form onSubmit={handleSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
         <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="firstName">
+          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="fullName">
             First Name
           </label>
           <input
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            id="firstName"
+            id="fullName"
             type="text"
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
           />
-        </div>
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="lastName">
-            Last Name
-          </label>
-          <input
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            id="lastName"
-            type="text"
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
-          />
-        </div>
+      
         <div className="mb-4">
           <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
             Email
