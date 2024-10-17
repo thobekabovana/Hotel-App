@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useDispatch } from 'react-redux';
 
 export function AddHotelForm() {
   const [location, setLocation] = useState('');
@@ -7,20 +8,34 @@ export function AddHotelForm() {
   const [faculties, setFaculties] = useState('');
   const [details, setDetails] = useState ('');
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (password =="" || email =="" || name == "") {
+      alert("Please fill in all fields");
+    }
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    // TODO: Handle form submission here
-    console.log(
-      "Form submitted with the following data:",
-      firstName,
-      lastName,
-      email,
-      guestCount,
-      arrivalDate,
-      arrivalTime,
-      specialRequest
-    );
+    if (!password.length >=6) {
+      alert("Password must be at least 6 characters");
+    }
+
+
+    try {
+      await createUserWithEmailAndPassword(auth, email, password)
+      const user = auth.currentUser;
+      console.log(user);
+      if (user) {
+        await setDoc(doc(db, "Admin", user.uid), {
+          email: user.email,
+          fullname: name,
+          companyname: companyName,
+          companynumber: companyNumer
+
+        })
+      }
+      console.log("Account Created")
+    } catch (err) {
+      console.log(err.message);
+    }
   };
 
   return (
