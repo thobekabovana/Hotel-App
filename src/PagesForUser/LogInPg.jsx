@@ -5,7 +5,7 @@ import { loginUser } from '../features/authSlice';
 import image from '../assets/images/240_F_46075517_EuzqL0cGOzzPcPL5YHYoNXdcRpi7EqzI.jpg';
 import { useNavigate } from 'react-router-dom';
 
-function LogInPg() {
+function SignIn() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const dispatch = useDispatch();
@@ -61,6 +61,10 @@ function LogInPg() {
               >
                 {loading ? 'Logging in...' : 'Login'}
               </button>
+              <p>  Don't have an account? 
+                 <a href="/sign-up" style={{ textDecoration: 'none', color: 'blue' }}> Click here
+                 </a>
+                 </p>
               {error && <p className="text-red-500 mt-2">{error}</p>}
             </form>
           </div>
@@ -70,4 +74,4 @@ function LogInPg() {
   );
 }
 
-export default LogInPg;
+export default SignIn;

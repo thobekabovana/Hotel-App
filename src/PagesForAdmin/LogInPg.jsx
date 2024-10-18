@@ -58,6 +58,10 @@ function LogInPg() {
               >
                 {loading ? 'Logging in...' : 'Login'}
               </button>
+              <p>  Don't have an account? 
+                <a href="/register" style={{ textDecoration: 'none', color: 'blue' }}> Click here
+                </a>
+                </p>
               {error && <p className="text-red-500 mt-2">{error}</p>}
             </form>
           </div>

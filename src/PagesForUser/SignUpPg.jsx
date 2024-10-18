@@ -5,7 +5,7 @@ import { signUpUser } from '../features/userSlice';
 import image from '../assets/images/240_F_46075517_EuzqL0cGOzzPcPL5YHYoNXdcRpi7EqzI.jpg';
 import { useNavigate } from 'react-router-dom';
 
-function SignUpPg() {
+function SignUp() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -68,6 +68,11 @@ function SignUpPg() {
           >
             {loading ? 'Creating...' : 'Submit'}
           </button>
+         
+           <p>  Already have an account? 
+            <a href="/log-in" style={{ textDecoration: 'none', color: 'blue' }}> Click here
+           </a>
+           </p>
           {error && <p className="text-red-500 mt-2">{error}</p>}
         </form>
       </div>
@@ -75,4 +80,4 @@ function SignUpPg() {
   );
 }
 
-export default SignUpPg;
+export default SignUp;

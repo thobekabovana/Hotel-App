@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import image from '../assets/images/240_F_46075517_EuzqL0cGOzzPcPL5YHYoNXdcRpi7EqzI.jpg';
 import { useDispatch, useSelector } from 'react-redux';
 import { registerUser } from '../features/adminSlice'
+import { useNavigate } from 'react-router-dom';
 
-function SignUp() {
+function Register() {
 
 
 
@@ -12,13 +13,13 @@ function SignUp() {
   const [password, setPassword] = useState('');
   const [companyName, setCompanyName] = useState('');
   const [companyNumber, setCompanyNumber] = useState('');
-
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { loading, error } = useSelector((state) => state.user);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
+    navigate('/AddHotel');
     if (!name || !email || !password) {
       alert('Please fill in all fields');
       return;
@@ -111,8 +112,11 @@ function SignUp() {
             disabled={loading}
           >
             {loading ? 'Submitting...' : 'Submit'}
-          </button>
-
+          </button> 
+          <p>  Already have an account? 
+            <a href="/logIn" style={{ textDecoration: 'none', color: 'blue' }}> Click here
+             </a>
+           </p>
           {error && <p className="text-red-500 mt-4">{error}</p>}
         </form>
       </div>
@@ -120,4 +124,4 @@ function SignUp() {
   );
 }
 
-export default SignUp;
+export default Register;
