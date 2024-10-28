@@ -123,9 +123,9 @@ const ProfileUser = ({ profile }) => {
               ? 'bg-indigo-600 text-white'
               : 'bg-gray-200 text-gray-800'
           } hover:bg-indigo-500 transition`}
-          onClick={() => setActiveTab('hotels')}
+          onClick={() => setActiveTab('favourites')}
         >
-          Hotels
+          Favourite
         </button>
         <button
           className={`px-6 py-2 rounded ${
@@ -133,9 +133,9 @@ const ProfileUser = ({ profile }) => {
               ? 'bg-indigo-600 text-white'
               : 'bg-gray-200 text-gray-800'
           } hover:bg-indigo-500 transition`}
-          onClick={() => setActiveTab('available')}
+          onClick={() => setActiveTab('bookingHistory')}
         >
-          Available
+          Booking History
         </button>
         <button
           className={`px-6 py-2 rounded ${
@@ -151,8 +151,8 @@ const ProfileUser = ({ profile }) => {
 
       {/* Content Section */}
       <main className="p-6 border rounded shadow-md bg-white min-h-[200px]">
-        {activeTab === 'hotels' && <Favourites />}
-        {activeTab === 'available' && <BookingHistory />}
+        {activeTab === 'favourites' && <Favourites />}
+        {activeTab === 'bookingHistory' && <BookingHistory />}
         {activeTab === 'booked' && <Booked />}
       </main>
     </div>

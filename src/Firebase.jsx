@@ -3,11 +3,9 @@ import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import {getAuth} from 'firebase/auth'
 import { getFirestore } from "firebase/firestore";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+import { getStorage } from "firebase/storage";
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+
 const firebaseConfig = {
   apiKey: "AIzaSyDol0S2XePySCINIUSdCuBHhvZUcIAGo5o",
   authDomain: "hotel-app-95d63.firebaseapp.com",
@@ -26,3 +24,4 @@ const firebaseConfig = {
   export const auth=getAuth();
   export const db=getFirestore(app);
   export default app;
+  export const storage = getStorage(app)

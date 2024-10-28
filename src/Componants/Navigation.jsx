@@ -41,7 +41,7 @@ const Navigation = () => {
             <img src={logo} alt="Logo" className="w-20 h-20" />
           </div>
 
-          {location.pathname === '/profileAdmin' ? (
+          {location.pathname === '/profileUser' ? (
             <div className="absolute left-1/2 transform -translate-x-1/2">
               <ul className="flex space-x-8">
                 <li>
