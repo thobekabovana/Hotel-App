@@ -27,10 +27,10 @@ function App() {
       <Routes>
         {/* user */}
         <Route path="/" element={<Layout />}>
-          <Route index element={<LandingPg />} />
-          <Route path="log-in" element={<SignIn />} />
-          <Route path="sign-up" element={<SignUp />} />
-          <Route path="home" element={<HomePg />} />
+          <Route path='/landing' index element={<LandingPg />} />
+          <Route path="/log-in" element={<SignIn />} />
+          <Route path="/sign-up" element={<SignUp />} />
+          <Route path="/home" element={<HomePg />} />
           <Route path="/profileUser" element={<ProfileUser />} />
           <Route path="/booking" element={<BookingForm />} />
 

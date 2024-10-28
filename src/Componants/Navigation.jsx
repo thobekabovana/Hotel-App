@@ -14,12 +14,12 @@ const Navigation = () => {
     const path = role === 'LogIn' ? '/logIn' : '/log-in';
     window.location.href = path;
   };
+
   const handleRoleSelectionSignUp = (role) => {
     setShowRoleModalSignUp(false);
     const path = role === 'Admin' ? '/register' : '/sign-up'; // Match the role values
     window.location.href = path;
   };
-
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -41,51 +41,34 @@ const Navigation = () => {
             <img src={logo} alt="Logo" className="w-20 h-20" />
           </div>
 
-          {location.pathname === '/profileUser' ? (
-            <div className="absolute left-1/2 transform -translate-x-1/2">
-              <ul className="flex space-x-8">
-                <li>
-                  <button
-                    onClick={() => (window.location.href = "/AddHotel")}
-                    className="text-black hover:text-white"
-                  >
-                    Home
-                  </button>
-                </li>
-              </ul>
-            </div>
-          ) : (
-            <div className="absolute left-1/2 transform -translate-x-1/2">
-              <ul className="flex space-x-8">
-                <li>
-                  <button
-                    onClick={() => (window.location.href = "/home")}
-                    className="text-black hover:text-white"
-                  >
-                    Home
-                  </button>
-                </li>
-                <li>
-                  <button
-                    onClick={() => setShowRoleModalSignIn(true)}
-                    className="text-black hover:text-white"
-                  >
-                    Sign-In
-                  </button>
-                </li>
-                <li>
-                  <button
-                    onClick={() => setShowRoleModalSignUp(true)}
-                    className="text-black hover:text-white"
-                  >
-                    Sign-Up
-                  </button>
-                </li>
-              </ul>
-            </div>
-          )}
-
-          
+          <div className="absolute left-1/2 transform -translate-x-1/2">
+            <ul className="flex space-x-8">
+              <li>
+                <button
+                  onClick={() => (window.location.href = "/landing")}
+                  className="text-black hover:text-white"
+                >
+                  Home
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => setShowRoleModalSignIn(true)}
+                  className="text-black hover:text-white"
+                >
+                  Sign-In
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => setShowRoleModalSignUp(true)}
+                  className="text-black hover:text-white"
+                >
+                  Sign-Up
+                </button>
+              </li>
+            </ul>
+          </div>
 
           {/* Profile Image & Click Button (Only show on home page) */}
           {location.pathname === '/home' && (
@@ -116,8 +99,6 @@ const Navigation = () => {
         </div>
       </nav>
 
-
-
       {/* Role Selection Modal */}
       {showRoleModalSignIn && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
@@ -145,32 +126,31 @@ const Navigation = () => {
         </div>
       )}
 
-{showRoleModalSignUp && (
-  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-    <div className="bg-white p-6 rounded shadow-lg">
-      <h2 className="mb-4">Select Your Role</h2>
-      <button
-        onClick={() => handleRoleSelectionSignUp('Admin')} // Pass 'Admin'
-        className="mr-4 bg-blue-500 text-white px-4 py-2 rounded"
-      >
-        Admin
-      </button>
-      <button
-        onClick={() => handleRoleSelectionSignUp('Client')} // Pass 'Client'
-        className="bg-green-500 text-white px-4 py-2 rounded"
-      >
-        Client
-      </button>
-      <button
-        onClick={() => setShowRoleModalSignUp(false)}
-        className="mt-4 text-gray-600 hover:text-gray-800"
-      >
-        Cancel
-      </button>
-    </div>
-  </div>
-)}
-      
+      {showRoleModalSignUp && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded shadow-lg">
+            <h2 className="mb-4">Select Your Role</h2>
+            <button
+              onClick={() => handleRoleSelectionSignUp('Admin')} // Pass 'Admin'
+              className="mr-4 bg-blue-500 text-white px-4 py-2 rounded"
+            >
+              Admin
+            </button>
+            <button
+              onClick={() => handleRoleSelectionSignUp('Client')} // Pass 'Client'
+              className="bg-green-500 text-white px-4 py-2 rounded"
+            >
+              Client
+            </button>
+            <button
+              onClick={() => setShowRoleModalSignUp(false)}
+              className="mt-4 text-gray-600 hover:text-gray-800"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
     </>
   );
 };
