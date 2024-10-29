@@ -13,9 +13,9 @@ function SignUp() {
   const navigate = useNavigate();
   const { loading, error, user } = useSelector((state) => state.user);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    navigate('/home');
+    
     if (!name || !email || !password) {
       return alert('Please fill in all fields');
     }
@@ -23,7 +23,15 @@ function SignUp() {
       return alert('Password must be at least 6 characters');
     }
 
-    dispatch(signUpUser({ name, email, password }));
+    // Dispatch signUpUser and wait for it to resolve
+    const resultAction = await dispatch(signUpUser({ name, email, password }));
+
+    // Check if sign-up was successful before navigating
+    if (signUpUser.fulfilled.match(resultAction)) {
+      navigate('/home');
+    } else {
+      alert('Sign up failed. Please try again.');
+    }
   };
 
   return (

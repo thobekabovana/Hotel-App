@@ -11,6 +11,36 @@ const ProfileUser = ({ profile }) => {
   const [isEditing, setIsEditing] = useState(false); 
   const [activeTab, setActiveTab] = useState('hotels');
 
+  import { useEffect, useState } from "react";
+import { auth, db } from "../Firebase"; // Ensure you have these imports
+import { doc, getDoc } from "firebase/firestore";
+
+  const [profile, setProfile] = useState(null);
+  const userId = auth.currentUser?.uid; // Get the logged-in user ID
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      if (userId) {
+        const profileDoc = doc(db, "Admin", userId); // Adjust "Admin" to your collection name
+        const profileData = await getDoc(profileDoc);
+        if (profileData.exists()) {
+          setProfile({ id: profileData.id, ...profileData.data() }); // Set the profile data
+        } else {
+          console.log("No such document!");
+        }
+      }
+    };
+
+    fetchProfile();
+  }, [userId]);
+
+  if (!profile) {
+    return <div>Loading...</div>; // Loading state
+  }
+
+  return <ProfileUser profile={profile} />;
+};
+
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {

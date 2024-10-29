@@ -1,4 +1,3 @@
-// redux/userSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { auth, db } from '../Firebase';
 import { setDoc, doc } from 'firebase/firestore';
@@ -20,21 +19,29 @@ export const registerUser = createAsyncThunk(
         companynumber: companyNumber,
       });
 
-      return user;
+      // Return the user details, including the ID
+      return { id: user.uid, email: user.email, name };
     } catch (error) {
       return rejectWithValue(error.message);
     }
   }
 );
 
+// Create the user slice
 const adminSlice = createSlice({
   name: 'user',
   initialState: {
+    userId: null, // Store the user's ID
     user: null,
     loading: false,
     error: null,
   },
-  reducers: {},
+  reducers: {
+    logout: (state) => {
+      state.userId = null;
+      state.user = null;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(registerUser.pending, (state) => {
@@ -43,6 +50,7 @@ const adminSlice = createSlice({
       })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.user = action.payload;
+        state.userId = action.payload.id; // Store the user's ID
         state.loading = false;
       })
       .addCase(registerUser.rejected, (state, action) => {
@@ -52,4 +60,5 @@ const adminSlice = createSlice({
   },
 });
 
+export const { logout } = adminSlice.actions; // Export the logout action
 export default adminSlice.reducer;

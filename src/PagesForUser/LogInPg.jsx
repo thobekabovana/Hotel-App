@@ -1,4 +1,3 @@
-// LogInPg.js
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginUser } from '../features/authSlice';
@@ -10,12 +9,19 @@ function SignIn() {
   const [password, setPassword] = useState('');
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { loading, error } = useSelector((state) => state.auth);
+  const { loading, error, role } = useSelector((state) => state.auth);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    navigate('/home');
-    dispatch(loginUser({ email, password }));
+    const resultAction = await dispatch(loginUser({ email, password }));
+    if (loginUser.fulfilled.match(resultAction)) {
+      const userRole = resultAction.payload.role;
+      if (userRole === 'admin') {
+        navigate('/admin-dashboard'); // Redirect admin to dashboard
+      } else {
+        navigate('/home'); // Redirect client to home
+      }
+    }
   };
 
   return (
@@ -61,10 +67,12 @@ function SignIn() {
               >
                 {loading ? 'Logging in...' : 'Login'}
               </button>
-              <p>  Don't have an account? 
-                 <a href="/sign-up" style={{ textDecoration: 'none', color: 'blue' }}> Click here
-                 </a>
-                 </p>
+              <p>
+                Don't have an account?{' '}
+                <a href="/sign-up" style={{ textDecoration: 'none', color: 'blue' }}>
+                  Click here
+                </a>
+              </p>
               {error && <p className="text-red-500 mt-2">{error}</p>}
             </form>
           </div>

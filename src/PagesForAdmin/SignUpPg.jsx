@@ -1,25 +1,23 @@
 import React, { useState } from 'react';
 import image from '../assets/images/240_F_46075517_EuzqL0cGOzzPcPL5YHYoNXdcRpi7EqzI.jpg';
 import { useDispatch, useSelector } from 'react-redux';
-import { registerUser } from '../features/adminSlice'
+import { registerUser } from '../features/adminSlice';
 import { useNavigate } from 'react-router-dom';
 
 function Register() {
-
-
-
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [companyName, setCompanyName] = useState('');
   const [companyNumber, setCompanyNumber] = useState('');
+  const [submitted, setSubmitted] = useState(false); // Track form submission
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { loading, error } = useSelector((state) => state.user);
+  const { loading, error, user } = useSelector((state) => state.user); // Get user from Redux
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    navigate('/AddHotel');
     if (!name || !email || !password) {
       alert('Please fill in all fields');
       return;
@@ -29,7 +27,19 @@ function Register() {
       return;
     }
 
-    dispatch(registerUser({ name, email, password, companyName, companyNumber }));
+    try {
+      const response = await dispatch(
+        registerUser({ name, email, password, companyName, companyNumber })
+      ).unwrap(); // Handle async response properly
+
+      if (response && response.id) {
+        setSubmitted(true);
+        navigate('/AddHotel'); // Navigate only on success
+      }
+    } catch (err) {
+      console.error('Registration failed:', err);
+      alert('Registration failed. Please try again.');
+    }
   };
 
   return (
@@ -112,11 +122,15 @@ function Register() {
             disabled={loading}
           >
             {loading ? 'Submitting...' : 'Submit'}
-          </button> 
-          <p>  Already have an account? 
-            <a href="/logIn" style={{ textDecoration: 'none', color: 'blue' }}> Click here
-             </a>
-           </p>
+          </button>
+
+          <p className="mt-4">
+            Already have an account?{' '}
+            <a href="/logIn" className="text-blue-600 underline">
+              Click here
+            </a>
+          </p>
+
           {error && <p className="text-red-500 mt-4">{error}</p>}
         </form>
       </div>

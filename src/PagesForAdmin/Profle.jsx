@@ -1,16 +1,51 @@
 // src/ProfilePage.js
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom"; // For navigation control
 import Hotels from "./HotelAdmin";
 import Available from "./Available";
 import Booked from "./Booked";
-import { auth, db } from "../Firebase";
-import { doc, deleteDoc, updateDoc } from "firebase/firestore";
+import { auth, db } from "../Firebase"; // Firebase auth and firestore imports
+import { doc, getDoc, deleteDoc, updateDoc } from "firebase/firestore";
 
-const Profile = ({ profile }) => {
+const Profile = () => {
+  const [profile, setProfile] = useState(null); // User's profile data
   const [image, setImage] = useState(null);
   const [updates, setUpdates] = useState({});
-  const [isEditing, setIsEditing] = useState(false); 
-  const [activeTab, setActiveTab] = useState('hotels');
+  const [isEditing, setIsEditing] = useState(false);
+  const [activeTab, setActiveTab] = useState("hotels");
+  const [loading, setLoading] = useState(true); // Loading state
+  const [error, setError] = useState(null); // Error state
+  const navigate = useNavigate(); // To redirect if needed
+
+  // Fetch the logged-in user's profile data
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const user = auth.currentUser;
+        if (!user) {
+          navigate("/login"); // Redirect to login if not authenticated
+          return;
+        }
+
+        const profileDoc = doc(db, "Admin", user.uid); // Fetch profile by UID
+        const profileSnapshot = await getDoc(profileDoc);
+
+        if (profileSnapshot.exists()) {
+          setProfile({ id: profileSnapshot.id, ...profileSnapshot.data() });
+        } else {
+          setError("Profile not found!");
+          navigate("/login"); // Redirect if profile doesn't exist
+        }
+      } catch (err) {
+        console.error("Error fetching profile:", err);
+        setError("Failed to load profile.");
+      } finally {
+        setLoading(false); // Stop loading state
+      }
+    };
+
+    fetchProfile();
+  }, [navigate]);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -21,30 +56,33 @@ const Profile = ({ profile }) => {
     }
   };
 
-  const deleteProfile = async (id) => {
+  const deleteProfile = async () => {
     try {
-      const profileDoc = doc(db, "Admin", id);
-      await deleteDoc(profileDoc);
+      await deleteDoc(doc(db, "Admin", profile.id));
       alert("Profile deleted successfully!");
+      auth.signOut(); // Log the user out after deleting their profile
+      navigate("/login");
     } catch (error) {
-      console.error("Error deleting profile: ", error);
+      console.error("Error deleting profile:", error);
     }
   };
 
-  const updateProfile = async (id) => {
+  const updateProfile = async () => {
     try {
-      const profileDoc = doc(db, "Admin", id);
-      await updateDoc(profileDoc, updates);
+      await updateDoc(doc(db, "Admin", profile.id), updates);
       alert("Profile updated successfully!");
       setIsEditing(false); // Close the input after successful update
     } catch (error) {
-      console.error("Error updating profile: ", error);
+      console.error("Error updating profile:", error);
     }
   };
 
   const handleUpdateChange = (e) => {
     setUpdates({ ...updates, [e.target.name]: e.target.value });
   };
+
+  if (loading) return <div>Loading profile...</div>;
+  if (error) return <div>Error: {error}</div>;
 
   return (
     <>
@@ -81,7 +119,7 @@ const Profile = ({ profile }) => {
         <div className="flex gap-4">
           <button
             className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-orange-700 transition"
-            onClick={() => deleteProfile(profile.id)}
+            onClick={deleteProfile}
           >
             Delete
           </button>
@@ -106,7 +144,7 @@ const Profile = ({ profile }) => {
             />
             <button
               className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition"
-              onClick={() => updateProfile(profile.id)}
+              onClick={updateProfile}
             >
               Save Changes
             </button>
@@ -115,48 +153,48 @@ const Profile = ({ profile }) => {
       </nav>
 
       <main>
-      <div className="container mx-auto p-6">
-      {/* Tabs Section */}
-      <div className="flex justify-center space-x-4 mb-4">
-        <button
-          className={`px-6 py-2 rounded ${
-            activeTab === 'hotels'
-              ? 'bg-indigo-600 text-white'
-              : 'bg-gray-200 text-gray-800'
-          } hover:bg-indigo-500 transition`}
-          onClick={() => setActiveTab('hotels')}
-        >
-          Hotels
-        </button>
-        <button
-          className={`px-6 py-2 rounded ${
-            activeTab === 'available'
-              ? 'bg-indigo-600 text-white'
-              : 'bg-gray-200 text-gray-800'
-          } hover:bg-indigo-500 transition`}
-          onClick={() => setActiveTab('available')}
-        >
-          Available
-        </button>
-        <button
-          className={`px-6 py-2 rounded ${
-            activeTab === 'booked'
-              ? 'bg-indigo-600 text-white'
-              : 'bg-gray-200 text-gray-800'
-          } hover:bg-indigo-500 transition`}
-          onClick={() => setActiveTab('booked')}
-        >
-          Booked
-        </button>
-      </div>
+        <div className="container mx-auto p-6">
+          {/* Tabs Section */}
+          <div className="flex justify-center space-x-4 mb-4">
+            <button
+              className={`px-6 py-2 rounded ${
+                activeTab === "hotels"
+                  ? "bg-indigo-600 text-white"
+                  : "bg-gray-200 text-gray-800"
+              } hover:bg-indigo-500 transition`}
+              onClick={() => setActiveTab("hotels")}
+            >
+              Hotels
+            </button>
+            <button
+              className={`px-6 py-2 rounded ${
+                activeTab === "available"
+                  ? "bg-indigo-600 text-white"
+                  : "bg-gray-200 text-gray-800"
+              } hover:bg-indigo-500 transition`}
+              onClick={() => setActiveTab("available")}
+            >
+              Available
+            </button>
+            <button
+              className={`px-6 py-2 rounded ${
+                activeTab === "booked"
+                  ? "bg-indigo-600 text-white"
+                  : "bg-gray-200 text-gray-800"
+              } hover:bg-indigo-500 transition`}
+              onClick={() => setActiveTab("booked")}
+            >
+              Booked
+            </button>
+          </div>
 
-      {/* Content Section */}
-      <main className="p-6 border rounded shadow-md bg-white min-h-[200px]">
-        {activeTab === 'hotels' && <Hotels />}
-        {activeTab === 'available' && <Available />}
-        {activeTab === 'booked' && <Booked />}
-      </main>
-    </div>
+          {/* Content Section */}
+          <div className="p-6 border rounded shadow-md bg-white min-h-[200px]">
+            {activeTab === "hotels" && <Hotels />}
+            {activeTab === "available" && <Available />}
+            {activeTab === "booked" && <Booked />}
+          </div>
+        </div>
       </main>
     </>
   );

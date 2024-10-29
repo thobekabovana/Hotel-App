@@ -1,57 +1,56 @@
-// src/features/userSlice.js
+// src/features/clientSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { auth, db } from '../Firebase';
+import { auth } from '../Firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { setDoc, doc } from 'firebase/firestore';
 
-// Thunk to handle signup logic asynchronously
-export const signUpUser = createAsyncThunk(
-  'user/signUpUser',
-  async ({ name, email, password }, thunkAPI) => {
+// Thunk to handle user registration for clients
+export const registerClient = createAsyncThunk(
+  'client/registerClient',
+  async ({ name, email, password }, { rejectWithValue }) => {
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
-      await setDoc(doc(db, 'Users', user.uid), {
-        email: user.email,
-        fullname: name,
-      });
-
-      return { uid: user.uid, email: user.email, name };
+      // Return the user details, including the ID
+      return { id: user.uid, email: user.email, name };
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.message);
+      return rejectWithValue(error.message);
     }
   }
 );
 
-const userSlice = createSlice({
-  name: 'user',
+// Create the client slice
+const clientSlice = createSlice({
+  name: 'client',
   initialState: {
+    userId: null, // Store the user's ID
     user: null,
     loading: false,
     error: null,
   },
   reducers: {
     logout: (state) => {
+      state.userId = null;
       state.user = null;
     },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(signUpUser.pending, (state) => {
+      .addCase(registerClient.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(signUpUser.fulfilled, (state, action) => {
-        state.loading = false;
+      .addCase(registerClient.fulfilled, (state, action) => {
         state.user = action.payload;
+        state.userId = action.payload.id; // Store the user's ID
+        state.loading = false;
       })
-      .addCase(signUpUser.rejected, (state, action) => {
+      .addCase(registerClient.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
   },
 });
 
-export const { logout } = userSlice.actions;
-export default userSlice.reducer;
+export const { logout } = clientSlice.actions; // Export the logout action
+export default clientSlice.reducer;

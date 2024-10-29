@@ -1,77 +1,94 @@
 import React, { useEffect, useState } from 'react';
-import { auth, db } from '../Firebase';
-import { doc, getDocs, collection, deleteDoc, updateDoc } from 'firebase/firestore';
-import { storage } from '../Firebase';
+import { auth, db, storage } from '../Firebase';
+import { collection, query, where, getDocs, doc, deleteDoc, updateDoc } from 'firebase/firestore';
 import { getDownloadURL, ref } from 'firebase/storage';
 
 export default function Hotels() {
   const [hotelList, setHotelList] = useState([]);
   const [updates, setUpdates] = useState({ location: '', price: '', facilities: '', description: '', details: '' });
   const [showUpdateForm, setShowUpdateForm] = useState({});
-  const [imageUrls, setImageUrls] = useState({}); // Object to hold image URLs for each hotel
-
-  const hotelsCollection = collection(db, "Hotels");
+  const [imageUrls, setImageUrls] = useState({}); // Store image URLs
 
   useEffect(() => {
     const getHotelsList = async () => {
       try {
-        const data = await getDocs(hotelsCollection);
-        const filteredData = data.docs.map((doc) => ({
+        const user = auth.currentUser;
+        if (!user) {
+          console.error('User not authenticated');
+          return;
+        }
+
+        const hotelsQuery = query(
+          collection(db, 'Hotels'),
+          where('userId', '==', user.uid) // Only fetch hotels added by this user
+        );
+
+        const data = await getDocs(hotelsQuery);
+        const hotels = data.docs.map((doc) => ({
           ...doc.data(),
           id: doc.id,
         }));
-        setHotelList(filteredData);
+
+        setHotelList(hotels);
+
         // Fetch images for each hotel
-        filteredData.forEach(hotel => {
-          fetchImage(hotel.id, hotel.imagePath); // Assuming imagePath is a property in hotel data
+        hotels.forEach((hotel) => {
+          if (hotel.imagePath) fetchImage(hotel.id, hotel.imagePath);
         });
       } catch (err) {
-        console.error(err);
+        console.error('Error fetching hotels:', err);
       }
     };
 
     getHotelsList();
   }, []);
 
-  const fetchImage = async (id, ) => {
+  const fetchImage = async (hotelId, imagePath) => {
     try {
-      const imageRef = ref(storage, `Hotelfiles`); // Ensure imagePath is correct
+      const imageRef = ref(storage, imagePath); // Use correct path from the hotel data
       const url = await getDownloadURL(imageRef);
-      console.log(`Fetched image URL for hotel ${id}:`, url);
-      setImageUrls(prev => ({ ...prev, [id]: url }));
+      setImageUrls((prev) => ({ ...prev, [hotelId]: url }));
     } catch (error) {
-      console.error(`Error fetching image for hotel ${id}:`, error);
+      console.error(`Error fetching image for hotel ${hotelId}:`, error);
     }
   };
 
   const deleteHotel = async (id) => {
-    const hotelDoc = doc(db, "Hotels", id);
-    await deleteDoc(hotelDoc);
+    try {
+      await deleteDoc(doc(db, 'Hotels', id));
+      setHotelList((prev) => prev.filter((hotel) => hotel.id !== id)); // Remove deleted hotel from state
+    } catch (err) {
+      console.error('Error deleting hotel:', err);
+    }
   };
 
   const updateHotel = async (id) => {
-    const hotelDoc = doc(db, "Hotels", id);
-    await updateDoc(hotelDoc, updates);
-    setShowUpdateForm(prev => ({ ...prev, [id]: false })); // Hide form after update
-    setUpdates({ location: '', price: '', facilities: '', description: '', details: '' }); // Reset updates
+    try {
+      const hotelDoc = doc(db, 'Hotels', id);
+      await updateDoc(hotelDoc, updates);
+      setShowUpdateForm((prev) => ({ ...prev, [id]: false })); // Hide form after update
+      setUpdates({ location: '', price: '', facilities: '', description: '', details: '' }); // Reset updates
+    } catch (err) {
+      console.error('Error updating hotel:', err);
+    }
   };
 
   return (
     <div className="p-8 bg-gray-100 min-h-screen">
-      <h1 className="text-3xl font-bold text-center text-gray-800 mb-8">Hotels That you Have</h1>
+      <h1 className="text-3xl font-bold text-center text-gray-800 mb-8">Hotels You Have Added</h1>
 
       <ul className="space-y-6">
         {hotelList.map((hotel) => (
           <li key={hotel.id} className="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition duration-300">
             <div className="flex flex-col items-center mb-4">
               <h2 className="text-2xl font-semibold text-gray-900">{hotel.hotel}</h2>
-              
+
               {imageUrls[hotel.id] ? (
-                <img src={imageUrls[hotel.id]} alt="Fetched from Firebase" />
+                <img src={imageUrls[hotel.id]} alt="Hotel" className="w-64 h-48 object-cover mb-4" />
               ) : (
                 <p>Loading image...</p>
               )}
-              
+
               <p className="text-sm text-gray-600 mb-2 text-center">
                 <span className="font-bold">Location:</span> {hotel.location}
               </p>
@@ -85,7 +102,6 @@ export default function Hotels() {
               <p className="text-sm text-gray-500 mb-4 text-center">{hotel.details}</p>
             </div>
 
-            {/* Centering buttons */}
             <div className="flex justify-center space-x-4">
               <button
                 className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-400 transition"
@@ -95,7 +111,7 @@ export default function Hotels() {
               </button>
               <button
                 className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition"
-                onClick={() => setShowUpdateForm(prev => ({ ...prev, [hotel.id]: !prev[hotel.id] }))}
+                onClick={() => setShowUpdateForm((prev) => ({ ...prev, [hotel.id]: !prev[hotel.id] }))}
               >
                 {showUpdateForm[hotel.id] ? 'Cancel' : 'Update'}
               </button>

@@ -1,24 +1,27 @@
 import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom'; // For detecting the current path
+import { useLocation, useNavigate } from 'react-router-dom'; // Import useNavigate
 import logo from '../assets/images/maning3 (1).svg';
+import { Link } from 'react-router-dom';
 
 const Navigation = () => {
-  const location = useLocation(); // Get the current URL path
-  const profileImageUrl = "path/to/your/profile-image.jpg"; // Not used
+  const location = useLocation();
+  const navigate = useNavigate(); // Initialize navigate
   const [showRoleModalSignIn, setShowRoleModalSignIn] = useState(false);
   const [showRoleModalSignUp, setShowRoleModalSignUp] = useState(false);
   const [image, setImage] = useState(null);
+  const [selectedRole, setSelectedRole] = useState(null);
 
   const handleRoleSelectionSignIn = (role) => {
+    setSelectedRole(role);
     setShowRoleModalSignIn(false);
     const path = role === 'LogIn' ? '/logIn' : '/log-in';
-    window.location.href = path;
+    navigate(path); 
   };
 
   const handleRoleSelectionSignUp = (role) => {
     setShowRoleModalSignUp(false);
-    const path = role === 'Admin' ? '/register' : '/sign-up'; // Match the role values
-    window.location.href = path;
+    const path = role === 'Admin' ? '/register' : '/sign-up';
+    navigate(path); // Navigate to the selected path
   };
 
   const handleImageChange = (e) => {
@@ -44,43 +47,27 @@ const Navigation = () => {
           <div className="absolute left-1/2 transform -translate-x-1/2">
             <ul className="flex space-x-8">
               <li>
-                <button
-                  onClick={() => (window.location.href = "/landing")}
-                  className="text-black hover:text-white"
-                >
-                  Home
-                </button>
+                <Link to="/landing" className="text-black hover:text-white">Home</Link>
               </li>
               <li>
-                <button
-                  onClick={() => setShowRoleModalSignIn(true)}
-                  className="text-black hover:text-white"
-                >
+                <button onClick={() => setShowRoleModalSignIn(true)} className="text-black hover:text-white">
                   Sign-In
                 </button>
               </li>
               <li>
-                <button
-                  onClick={() => setShowRoleModalSignUp(true)}
-                  className="text-black hover:text-white"
-                >
+                <button onClick={() => setShowRoleModalSignUp(true)} className="text-black hover:text-white">
                   Sign-Up
                 </button>
               </li>
             </ul>
           </div>
 
-          {/* Profile Image & Click Button (Only show on home page) */}
-          {location.pathname === '/home' && (
+          {(location.pathname === '/home' || location.pathname === '/AddHotel') && (
             <div className="flex items-center space-x-4">
               <div className="relative">
                 <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-white bg-white">
                   {image ? (
-                    <img
-                      src={image}
-                      alt="Profile"
-                      className="w-full h-full object-cover"
-                    />
+                    <img src={image} alt="Profile" className="w-full h-full object-cover" />
                   ) : (
                     <div className="flex items-center justify-center h-full text-gray-500">
                       Upload Image
@@ -89,7 +76,11 @@ const Navigation = () => {
                 </div>
               </div>
               <button
-                onClick={() => (window.location.href = "/profileAdmin")}
+                onClick={() => {
+                  const profilePath = location.pathname === '/AddHotel' ? '/profileAdmin' : '/profileUser';
+                  console.log("Navigating to:", profilePath); // Debugging line
+                  navigate(profilePath); // Use navigate for redirection
+                }}
                 className="bg-blue-500 text-white px-3 py-1 rounded-full cursor-pointer shadow-md transition-transform transform hover:scale-105"
               >
                 Click
@@ -105,13 +96,13 @@ const Navigation = () => {
           <div className="bg-white p-6 rounded shadow-lg">
             <h2 className="mb-4">Select Your Role</h2>
             <button
-              onClick={() => handleRoleSelectionSignIn('LogIn')}
+              onClick={() => handleRoleSelectionSignIn('Admin')}
               className="mr-4 bg-blue-500 text-white px-4 py-2 rounded"
             >
               Admin
             </button>
             <button
-              onClick={() => handleRoleSelectionSignIn('log-in')}
+              onClick={() => handleRoleSelectionSignIn('Client')}
               className="bg-green-500 text-white px-4 py-2 rounded"
             >
               Client
@@ -131,13 +122,13 @@ const Navigation = () => {
           <div className="bg-white p-6 rounded shadow-lg">
             <h2 className="mb-4">Select Your Role</h2>
             <button
-              onClick={() => handleRoleSelectionSignUp('Admin')} // Pass 'Admin'
+              onClick={() => handleRoleSelectionSignUp('Admin')}
               className="mr-4 bg-blue-500 text-white px-4 py-2 rounded"
             >
               Admin
             </button>
             <button
-              onClick={() => handleRoleSelectionSignUp('Client')} // Pass 'Client'
+              onClick={() => handleRoleSelectionSignUp('Client')}
               className="bg-green-500 text-white px-4 py-2 rounded"
             >
               Client
